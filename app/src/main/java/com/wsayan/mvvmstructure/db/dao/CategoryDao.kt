@@ -1,10 +1,10 @@
-package com.wsayan.mvvmstructure.local.db.dao
+package com.wsayan.mvvmstructure.db.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.wsayan.mvvmstructure.local.db.entity.Category
+import com.wsayan.mvvmstructure.db.entity.Category
 
 
 @Dao

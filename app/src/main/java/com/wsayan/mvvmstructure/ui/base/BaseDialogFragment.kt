@@ -8,7 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.wsayan.mvvmstructure.DataManager
+import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.R
 import javax.inject.Inject
 

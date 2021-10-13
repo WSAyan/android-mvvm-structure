@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.local.db.entity
+package com.wsayan.mvvmstructure.db.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.PrimaryKey

@@ -2,10 +2,11 @@ package com.wsayan.mvvmstructure.di
 
 import android.content.Context
 import com.wsayan.mvvmstructure.BuildConfig
-import com.wsayan.mvvmstructure.local.db.RoomHelper
-import com.wsayan.mvvmstructure.network.ApiHelper
+import com.wsayan.mvvmstructure.db.RoomHelper
+import com.wsayan.mvvmstructure.preference.PreferencesHelper
 import com.wsayan.mvvmstructure.network.IApiService
-import com.wsayan.mvvmstructure.local.preference.PreferencesHelper
+import com.wsayan.mvvmstructure.repo.IMoviesRepository
+import com.wsayan.mvvmstructure.repo.MoviesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -86,9 +87,10 @@ object AppModule {
         return RoomHelper(context)
     }
 
+
     @Provides
     @Singleton
-    fun provideApiHelper(apiService: IApiService): ApiHelper {
-        return ApiHelper(apiService)
+    fun provideMoviesRepo(dataManager: DataManager): IMoviesRepository {
+        return MoviesRepository(dataManager)
     }
 }

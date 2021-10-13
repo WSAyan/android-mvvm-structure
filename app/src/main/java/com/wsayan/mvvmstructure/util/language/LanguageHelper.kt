@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.language
+package com.wsayan.mvvmstructure.util.language
 
 import android.annotation.TargetApi
 import android.content.Context

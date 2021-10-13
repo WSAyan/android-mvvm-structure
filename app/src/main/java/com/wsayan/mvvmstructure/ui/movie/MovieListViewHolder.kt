@@ -2,7 +2,7 @@ package com.wsayan.mvvmstructure.ui.movie
 
 import android.content.Context
 import androidx.viewbinding.ViewBinding
-import com.wsayan.mvvmstructure.data.ResultsItem
+import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.databinding.ItemMovieBinding
 import com.wsayan.mvvmstructure.ui.base.BaseViewHolder
 import com.wsayan.mvvmstructure.ui.common.IAdapterListener

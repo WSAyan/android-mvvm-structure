@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.background.worker
+package com.wsayan.mvvmstructure.worker
 
 import android.content.Context
 import android.util.Log

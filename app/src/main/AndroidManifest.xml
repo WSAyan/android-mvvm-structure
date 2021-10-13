@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Androidmvvmstructure">
-        <activity android:name="com.wsayan.mvvmstructure.ui.splash.SplashActivity">
+        <activity android:name=".ui.main.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,7 +26,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ui.main.MainActivity" />
 
         <provider
             android:name="androidx.work.impl.WorkManagerInitializer"

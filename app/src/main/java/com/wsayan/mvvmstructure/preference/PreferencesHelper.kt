@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.local.preference
+package com.wsayan.mvvmstructure.preference
 
 import android.content.Context
 import android.content.SharedPreferences

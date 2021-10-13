@@ -13,11 +13,17 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.wsayan.mvvmstructure.R
+import okhttp3.ResponseBody
+import retrofit2.Response
+import kotlin.reflect.KClass
 
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(this, message, length).show()
 
+fun String.showToast(context: Context, length: Int = Toast.LENGTH_SHORT) =
+    Toast.makeText(context, this, length).show()
 
 fun EditText.showKeyboard(delay: Long = 100) =
     this.postDelayed({
@@ -71,4 +77,17 @@ fun View.snacksbarView(message: String, flag: Boolean) {
         snackbar.show()
     }
 
+}
+
+fun <T : Any> Response<ResponseBody>.convertData(classType: KClass<T>): Any {
+    val body = if (this.isSuccessful) {
+        this.body()?.string()
+    } else {
+        this.errorBody()?.string()
+    }
+
+    return Gson().fromJson(
+        body,
+        classType.java
+    )
 }

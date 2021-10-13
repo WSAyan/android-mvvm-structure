@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.background.firebase
+package com.wsayan.mvvmstructure.firebase
 
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService

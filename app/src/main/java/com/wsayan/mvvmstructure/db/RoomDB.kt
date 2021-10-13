@@ -1,9 +1,9 @@
-package com.wsayan.mvvmstructure.local.db
+package com.wsayan.mvvmstructure.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.wsayan.mvvmstructure.local.db.dao.CategoryDao
-import com.wsayan.mvvmstructure.local.db.entity.Category
+import com.wsayan.mvvmstructure.db.dao.CategoryDao
+import com.wsayan.mvvmstructure.db.entity.Category
 
 
 @Database(entities = arrayOf(Category::class) , version = 1, exportSchema = false)

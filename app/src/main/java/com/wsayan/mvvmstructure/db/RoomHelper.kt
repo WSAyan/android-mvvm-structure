@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.local.db
+package com.wsayan.mvvmstructure.db
 
 import android.content.Context
 import androidx.room.Room

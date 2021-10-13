@@ -3,7 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph_main.xml"
-    app:startDestination="@id/moviesFragment">
+    app:startDestination="@id/splashFragment">
+
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.wsayan.mvvmstructure.ui.splash.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splash_to_movies"
+            app:destination="@id/moviesFragment"
+            app:popUpTo="@id/splashFragment" />
+    </fragment>
+
 
     <fragment
         android:id="@+id/moviesFragment"
@@ -20,8 +32,7 @@
         android:id="@+id/movieDetailsFragment"
         android:name="com.wsayan.mvvmstructure.ui.movie.MovieDetailsFragment"
         android:label="fragment_movie_details"
-        tools:layout="@layout/fragment_movie_details">
-    </fragment>
+        tools:layout="@layout/fragment_movie_details"></fragment>
 
 
 </navigation>

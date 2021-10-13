@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.data
+package com.wsayan.mvvmstructure.network.data
 
 import com.google.gson.annotations.SerializedName
 

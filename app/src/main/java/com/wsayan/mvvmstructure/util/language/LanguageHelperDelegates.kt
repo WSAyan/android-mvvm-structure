@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.language
+package com.wsayan.mvvmstructure.util.language
 
 import android.app.Activity
 import android.content.Context

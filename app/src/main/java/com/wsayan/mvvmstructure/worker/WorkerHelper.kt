@@ -1,4 +1,4 @@
-package com.wsayan.mvvmstructure.background.worker
+package com.wsayan.mvvmstructure.worker
 
 import androidx.work.*
 import java.util.concurrent.TimeUnit
