@@ -1,5 +1,6 @@
 package com.wsayan.mvvmstructure.util
 
+
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -14,9 +15,14 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.wsayan.mvvmstructure.R
+import com.wsayan.mvvmstructure.network.DataResult
 import okhttp3.ResponseBody
+import org.json.JSONObject
+import retrofit2.HttpException
 import retrofit2.Response
+import java.lang.Exception
 import kotlin.reflect.KClass
 
 fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) =
@@ -86,8 +92,24 @@ fun <T : Any> Response<ResponseBody>.convertData(classType: KClass<T>): Any {
         this.errorBody()?.string()
     }
 
-    return Gson().fromJson(
+    return GsonBuilder().serializeNulls().create().fromJson(
         body,
         classType.java
     )
 }
+
+fun <T : Any> ResponseBody.convertBody(classType: KClass<T>): Any {
+    return GsonBuilder().serializeNulls().create().fromJson(
+        this.string(),
+        classType.java
+    )
+}
+
+fun <T : Any> Response<ResponseBody>.convertData2(classType: KClass<T>): Any {
+
+    return GsonBuilder().serializeNulls().create().fromJson(
+        this.body()?.string(),
+        classType.java
+    )
+}
+

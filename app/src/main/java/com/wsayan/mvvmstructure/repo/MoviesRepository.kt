@@ -3,7 +3,12 @@ package com.wsayan.mvvmstructure.repo
 import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.network.DataResult
 import com.wsayan.mvvmstructure.network.data.MovieListResponse
+import com.wsayan.mvvmstructure.network.data.ResultsItem
+import com.wsayan.mvvmstructure.network.resolveData
 import com.wsayan.mvvmstructure.util.convertData
+import com.wsayan.mvvmstructure.util.convertData2
+import okhttp3.ResponseBody
+import retrofit2.Response
 import javax.inject.Inject
 
 
@@ -44,5 +49,13 @@ class MoviesRepository @Inject constructor(
             .apiService
             .getRequest("3/movie/popular", hashMap)
             .convertData(MovieListResponse::class) as MovieListResponse
+    }
+
+    override suspend fun fetchPopularMovies3(): MovieListResponse {
+        val hashMap = HashMap<String, String>()
+        hashMap["api_key"] = "ff828a72b45f8a8bc8835e4999ee3f6a"
+        return dataManager
+            .apiService
+            .getRequest2("3/movie/popular", hashMap)
     }
 }

@@ -3,10 +3,7 @@ package com.wsayan.mvvmstructure.network.data
 import com.google.gson.annotations.SerializedName
 
 open class BaseResponse(
-    @field:SerializedName("status")
-    val status: Int? = null,
-    @field:SerializedName("message")
-    val message: Int? = null,
-    @field:SerializedName("errors")
-    val errors: List<String>? = null,
+    @SerializedName("success") val success: Boolean? = null,
+    @SerializedName("status_code") val status_code: Int? = null,
+    @SerializedName("status_message") val status_message: String? = null
 )

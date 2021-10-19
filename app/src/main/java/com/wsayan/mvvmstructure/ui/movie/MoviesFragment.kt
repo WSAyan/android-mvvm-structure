@@ -3,6 +3,7 @@ package com.wsayan.mvvmstructure.ui.movie
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -12,6 +13,7 @@ import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.databinding.FragmentMoviesBinding
 import com.wsayan.mvvmstructure.databinding.ItemMovieBinding
 import com.wsayan.mvvmstructure.network.DataResult
+import com.wsayan.mvvmstructure.network.NetworkState
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
 import com.wsayan.mvvmstructure.ui.base.BaseRecyclerAdapter
 import com.wsayan.mvvmstructure.ui.base.BaseViewHolder
@@ -32,45 +34,23 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
 
         lifecycleScope.launch {
             viewModel.getPopularMovies().collect {
-                when (it.status) {
-                    DataResult.Status.LOADING -> {
+                when (it) {
+                    is NetworkState.Loading -> {
                         progressBarHandler.show()
                     }
-                    DataResult.Status.SUCCESS -> {
+                    is NetworkState.Data -> {
                         progressBarHandler.hide()
-                        initRecycler(it.data?.results)
+                        initRecycler(it.data.results)
+
                     }
-                    DataResult.Status.ERROR -> {
+                    is NetworkState.Error -> {
                         progressBarHandler.hide()
-                        it.message?.showToast(requireContext())
+                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
         //movieListObservers()
-    }
-
-    private fun movieListObservers() {
-        viewModel.apiResponseInit()
-
-        viewModel.movieListResponse.observe(viewLifecycleOwner) {
-            initRecycler(it.results)
-        }
-
-        viewModel.isLoading.observe(viewLifecycleOwner) { showLoader ->
-            if (showLoader) {
-                progressBarHandler.show()
-            } else {
-                progressBarHandler.hide()
-            }
-        }
-
-
-        viewModel.forceLogOut.observe(viewLifecycleOwner) { logOut ->
-            if (logOut) {
-                //findNavController().navigate(R.id.action_startFragment_to_firstFragment)
-            }
-        }
     }
 
     private fun initRecycler(results: List<ResultsItem?>?) {
