@@ -8,12 +8,6 @@ import retrofit2.http.*
 
 interface IApiService {
     @GET("{url}")
-    suspend fun getRequest2(
-        @Path(value = "url", encoded = true) path: String,
-        @QueryMap hashMap: Map<String, String>
-    ): MovieListResponse
-
-    @GET("{url}")
     suspend fun getRequest(
         @Path(value = "url", encoded = true) path: String,
         @QueryMap hashMap: Map<String, String>

@@ -1,11 +1,14 @@
 package com.wsayan.mvvmstructure.network
 
+import com.google.gson.GsonBuilder
 import com.wsayan.mvvmstructure.network.data.BaseResponse
-import com.wsayan.mvvmstructure.util.convertBody
+import okhttp3.ResponseBody
 import retrofit2.HttpException
+import retrofit2.Response
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import kotlin.reflect.KClass
 
 sealed class NetworkState<out T> {
     object Loading : NetworkState<Nothing>()
@@ -92,6 +95,24 @@ fun Exception.resolveError(): NetworkState.Error {
         exception = this,
         errorBody = null,
         unauthorized = false
+    )
+}
+
+fun <T : Any> Response<ResponseBody>.convertData(classType: KClass<T>): Any {
+    val body = if (this.isSuccessful) {
+        this.body()?.string()
+    } else throw HttpException(this)
+
+    return GsonBuilder().serializeNulls().create().fromJson(
+        body,
+        classType.java
+    )
+}
+
+fun <T : Any> ResponseBody.convertBody(classType: KClass<T>): Any {
+    return GsonBuilder().serializeNulls().create().fromJson(
+        this.string(),
+        classType.java
     )
 }
 

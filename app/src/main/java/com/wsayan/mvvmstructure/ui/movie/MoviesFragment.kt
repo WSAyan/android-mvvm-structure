@@ -3,17 +3,15 @@ package com.wsayan.mvvmstructure.ui.movie
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wsayan.mvvmstructure.R
-import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.databinding.FragmentMoviesBinding
 import com.wsayan.mvvmstructure.databinding.ItemMovieBinding
-import com.wsayan.mvvmstructure.network.DataResult
 import com.wsayan.mvvmstructure.network.NetworkState
+import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
 import com.wsayan.mvvmstructure.ui.base.BaseRecyclerAdapter
 import com.wsayan.mvvmstructure.ui.base.BaseViewHolder
@@ -56,7 +54,6 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                 }
             }
         }
-        //movieListObservers()
     }
 
     private fun initRecycler(results: List<ResultsItem?>?) {
