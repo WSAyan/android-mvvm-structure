@@ -2,53 +2,10 @@ package com.wsayan.mvvmstructure.network
 
 import com.wsayan.mvvmstructure.network.data.BaseResponse
 import com.wsayan.mvvmstructure.util.convertBody
-import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import kotlin.reflect.KClass
-
-class DataResult<out T>(
-    val status: Status,
-    val data: T? = null,
-    val error: Throwable? = null,
-    val message: String? = null,
-    val shouldLogout: Boolean = false
-) {
-    companion object {
-        fun <T> success(data: T? = null) = DataResult(
-            status = Status.SUCCESS,
-            data = data
-        )
-
-        fun loading(
-            message: String? = null
-        ) = DataResult(
-            status = Status.LOADING,
-            data = null,
-            message = message
-        )
-
-        fun <T> error(
-            error: Exception? = null,
-            message: String? = null,
-            data: T? = null,
-            shouldLogout: Boolean = false
-        ) = DataResult(
-            status = Status.ERROR,
-            data = data,
-            error = error,
-            message = message,
-            shouldLogout = shouldLogout
-        )
-    }
-
-    enum class Status {
-        SUCCESS, ERROR, LOADING
-    }
-
-}
 
 sealed class NetworkState<out T> {
     object Loading : NetworkState<Nothing>()
@@ -136,13 +93,5 @@ fun Exception.resolveError(): NetworkState.Error {
         errorBody = null,
         unauthorized = false
     )
-}
-
-fun <T : Any> ResponseBody.resolveData(classType: KClass<T>): NetworkState<T> {
-    return try {
-        NetworkState.Data(this.convertBody(classType) as T)
-    } catch (exception: Exception) {
-        exception.resolveError()
-    }
 }
 
