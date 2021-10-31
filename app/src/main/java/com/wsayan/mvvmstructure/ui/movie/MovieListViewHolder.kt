@@ -10,8 +10,7 @@ import com.wsayan.mvvmstructure.ui.common.IAdapterListener
 class MovieListViewHolder(
     itemView: ViewBinding,
     context: Context
-) :
-    BaseViewHolder(itemView.root) {
+) : BaseViewHolder(itemView.root) {
 
     var binding = itemView as ItemMovieBinding
     var mContext: Context = context

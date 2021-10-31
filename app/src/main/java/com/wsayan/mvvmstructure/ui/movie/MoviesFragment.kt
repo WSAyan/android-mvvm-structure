@@ -1,11 +1,14 @@
 package com.wsayan.mvvmstructure.ui.movie
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wsayan.mvvmstructure.R
 import com.wsayan.mvvmstructure.databinding.FragmentMoviesBinding
@@ -16,22 +19,40 @@ import com.wsayan.mvvmstructure.ui.base.BaseFragment
 import com.wsayan.mvvmstructure.ui.base.BaseRecyclerAdapter
 import com.wsayan.mvvmstructure.ui.base.BaseViewHolder
 import com.wsayan.mvvmstructure.ui.common.IAdapterListener
+import com.wsayan.mvvmstructure.ui.common.PagerLoadStateAdapter
 import com.wsayan.mvvmstructure.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
 class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
     private val viewModel: MovieViewModel by viewModels()
+    lateinit var movieListAdapter: MovieListAdapter
 
     override fun viewRelatedTask() {
         binding.toolbar.backIV.visibility = View.GONE
         binding.toolbar.titleTV.text = getString(R.string.movies)
 
+        movieListAdapter = MovieListAdapter(onItemClick = { data, position, view ->
+            when (view.id) {
+                R.id.itemLayout -> {
+                    findNavController().navigate(R.id.action_movies_to_details)
+                }
+            }
+        })
+        binding.movieList.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            adapter = movieListAdapter.withLoadStateFooter(
+                footer = PagerLoadStateAdapter { movieListAdapter.retry() }
+            )
+        }
+
         lifecycleScope.launch {
-            viewModel.getPopularMovies().collect {
+            /*viewModel.getPopularMovies().collect {
                 when (it) {
                     is NetworkState.Loading -> {
                         progressBarHandler.show()
@@ -51,6 +72,32 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
 
                         requireContext().showToast(it.exception.message)
                     }
+                }
+            }*/
+            viewModel.listData.collectLatest {
+                movieListAdapter.submitData(it)
+            }
+        }
+
+
+        movieListAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.Loading) {
+                progressBarHandler.show()
+            } else {
+                // Hide ProgressBar
+                progressBarHandler.hide()
+
+                // If we have an error, show a toast
+                val errorState = when {
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.refresh is LoadState.Error -> {
+                        loadState.refresh as LoadState.Error
+                    }
+                    else -> null
+                }
+                errorState?.let {
+                    requireContext().showToast(it.error.message)
                 }
             }
         }
@@ -82,7 +129,7 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                         ), requireContext()
                     )
                 }
-            }, results as ArrayList<ResultsItem?>)
+            }, results as MutableList<ResultsItem?>)
     }
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentMoviesBinding

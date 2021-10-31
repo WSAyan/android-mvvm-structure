@@ -8,7 +8,7 @@ import com.wsayan.mvvmstructure.ui.common.IAdapterListener
 class BaseRecyclerAdapter<T>(
     mContext: Context?,
     mListener: IAdapterListener,
-    datas: ArrayList<T>
+    datas: MutableList<T>
 ) :
     RecyclerView.Adapter<BaseViewHolder>() {
 

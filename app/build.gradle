@@ -42,15 +42,22 @@ android {
         }
     }
 
+    Properties properties = new Properties()
+    if (project.rootProject.file('local.properties').canRead()) {
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+    }
+
     flavorDimensions "version"
     productFlavors {
         demo {
             dimension "version"
             buildConfigField "String", "SERVER_URL", '"http://api.themoviedb.org/"'
+            buildConfigField "String", "API_KEY", properties.getProperty("tmdb.api_key", "")
         }
         live {
             dimension "version"
             buildConfigField "String", "SERVER_URL", '"http://api.themoviedb.org/"'
+            buildConfigField "String", "API_KEY", properties.getProperty("tmdb.api_key", "")
         }
     }
 
@@ -80,7 +87,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
     /*paging*/
-    implementation 'androidx.paging:paging-runtime-ktx:3.1.0-alpha04'
+    implementation 'androidx.paging:paging-runtime-ktx:3.1.0-beta01'
 
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 

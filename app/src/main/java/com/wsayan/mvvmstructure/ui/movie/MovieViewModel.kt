@@ -1,7 +1,12 @@
 package com.wsayan.mvvmstructure.ui.movie
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.wsayan.mvvmstructure.network.NetworkState
+import com.wsayan.mvvmstructure.network.PostDataSource
 import com.wsayan.mvvmstructure.network.data.MovieListResponse
 import com.wsayan.mvvmstructure.network.resolveError
 import com.wsayan.mvvmstructure.repo.MoviesRepository
@@ -24,5 +29,9 @@ class MovieViewModel @Inject constructor(
             emit(e.resolveError())
         }
     }
+
+    val listData = Pager(PagingConfig(pageSize = 6)) {
+        PostDataSource(moviesRepo)
+    }.flow.cachedIn(viewModelScope)
 
 }
