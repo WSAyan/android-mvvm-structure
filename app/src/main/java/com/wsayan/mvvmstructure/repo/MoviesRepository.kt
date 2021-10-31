@@ -7,6 +7,7 @@ import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.network.resolveData
 import com.wsayan.mvvmstructure.util.convertData
 import com.wsayan.mvvmstructure.util.convertData2
+import com.wsayan.mvvmstructure.util.convertData3
 import okhttp3.ResponseBody
 import retrofit2.Response
 import javax.inject.Inject
@@ -44,11 +45,11 @@ class MoviesRepository @Inject constructor(
 
     override suspend fun fetchPopularMovies(): MovieListResponse {
         val hashMap = HashMap<String, String>()
-        hashMap["api_key"] = "ff828a72b45f8a8bc8835e499ee3f6a"
+        hashMap["api_key"] = "ff828a72b45f8a8bc8835e4999ee3f6a"
         return dataManager
             .apiService
             .getRequest("3/movie/popular", hashMap)
-            .convertData(MovieListResponse::class) as MovieListResponse
+            .convertData3(MovieListResponse::class) as MovieListResponse
     }
 
     override suspend fun fetchPopularMovies3(): MovieListResponse {

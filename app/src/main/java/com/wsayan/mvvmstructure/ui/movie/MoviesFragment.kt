@@ -45,7 +45,13 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                     }
                     is NetworkState.Error -> {
                         progressBarHandler.hide()
-                        Toast.makeText(requireContext(), it.exception.message, Toast.LENGTH_SHORT).show()
+
+                        if (it.unauthorized) {
+                            // todo: handle unauthorized action
+                            forceLogout()
+                        }
+
+                        requireContext().showToast(it.exception.message)
                     }
                 }
             }

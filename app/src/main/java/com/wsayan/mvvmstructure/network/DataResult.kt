@@ -52,7 +52,13 @@ class DataResult<out T>(
 
 sealed class NetworkState<out T> {
     object Loading : NetworkState<Nothing>()
-    data class Error(var exception: Throwable) : NetworkState<Nothing>()
+
+    data class Error(
+        var exception: Throwable,
+        var errorBody: BaseResponse? = null,
+        var unauthorized: Boolean = false
+    ) : NetworkState<Nothing>()
+
     data class Data<T>(var data: T) : NetworkState<T>()
 }
 
@@ -92,20 +98,44 @@ open class NetworkErrorExceptions(
 fun Exception.resolveError(): NetworkState.Error {
     when (this) {
         is SocketTimeoutException -> {
-            return NetworkState.Error(NetworkErrorExceptions(errorMessage = "connection error!"))
+            val exception = NetworkErrorExceptions(errorMessage = "connection error!")
+            return NetworkState.Error(
+                exception = exception,
+                errorBody = exception.errorBody,
+                unauthorized = exception.unauthorized
+            )
         }
         is ConnectException -> {
-            return NetworkState.Error(NetworkErrorExceptions(errorMessage = "no internet access!"))
+            val exception = NetworkErrorExceptions(errorMessage = "no internet access!")
+            return NetworkState.Error(
+                exception = exception,
+                errorBody = exception.errorBody,
+                unauthorized = exception.unauthorized
+            )
         }
         is UnknownHostException -> {
-            return NetworkState.Error(NetworkErrorExceptions(errorMessage = "no internet access!"))
+            val exception = NetworkErrorExceptions(errorMessage = "no internet access!")
+            return NetworkState.Error(
+                exception = exception,
+                errorBody = exception.errorBody,
+                unauthorized = exception.unauthorized
+            )
         }
         is HttpException -> {
-            return NetworkState.Error(NetworkErrorExceptions.parseException(this))
+            val exception = NetworkErrorExceptions.parseException(this)
+            return NetworkState.Error(
+                exception = exception,
+                errorBody = exception.errorBody,
+                unauthorized = exception.unauthorized
+            )
         }
     }
 
-    return NetworkState.Error(this)
+    return NetworkState.Error(
+        exception = this,
+        errorBody = null,
+        unauthorized = false
+    )
 }
 
 fun <T : Any> ResponseBody.resolveData(classType: KClass<T>): NetworkState<T> {

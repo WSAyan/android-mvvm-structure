@@ -24,7 +24,7 @@ class MovieViewModel @Inject constructor(
     fun getPopularMovies() = flow {
         emit(NetworkState.Loading)
         try {
-            emit(NetworkState.Data(moviesRepo.fetchPopularMovies3()))
+            emit(NetworkState.Data(moviesRepo.fetchPopularMovies()))
         } catch (e: Exception) {
             emit(e.resolveError())
         }

@@ -25,7 +25,7 @@ import retrofit2.Response
 import java.lang.Exception
 import kotlin.reflect.KClass
 
-fun Context.showToast(message: String, length: Int = Toast.LENGTH_SHORT) =
+fun Context.showToast(message: String?, length: Int = Toast.LENGTH_SHORT) =
     Toast.makeText(this, message, length).show()
 
 fun String.showToast(context: Context, length: Int = Toast.LENGTH_SHORT) =
@@ -91,6 +91,17 @@ fun <T : Any> Response<ResponseBody>.convertData(classType: KClass<T>): Any {
     } else {
         this.errorBody()?.string()
     }
+
+    return GsonBuilder().serializeNulls().create().fromJson(
+        body,
+        classType.java
+    )
+}
+
+fun <T : Any> Response<ResponseBody>.convertData3(classType: KClass<T>): Any {
+    val body = if (this.isSuccessful) {
+        this.body()?.string()
+    } else throw HttpException(this)
 
     return GsonBuilder().serializeNulls().create().fromJson(
         body,

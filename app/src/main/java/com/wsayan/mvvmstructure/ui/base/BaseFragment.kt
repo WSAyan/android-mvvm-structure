@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.util.ProgressBarHandler
@@ -45,4 +46,7 @@ abstract class BaseFragment<VB: ViewBinding> : Fragment() {
         return requireNotNull(_binding).root
     }
 
+    fun forceLogout(){
+        // todo: navigate to login screen
+    }
 }
