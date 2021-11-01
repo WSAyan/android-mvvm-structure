@@ -1,5 +1,6 @@
 package com.wsayan.mvvmstructure.ui.movie
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,9 +36,11 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
         movieListAdapter = MovieListAdapter(onItemClick = { data, position, view ->
             when (view.id) {
                 R.id.itemLayout -> {
-                    findNavController().navigate(R.id.action_movies_to_details, bundleOf(
-                        getString(R.string.movie_bundle_key) to data
-                    ))
+                    findNavController().navigate(
+                        R.id.action_movies_to_details, bundleOf(
+                            getString(R.string.movie_bundle_key) to data
+                        )
+                    )
                 }
             }
         })
@@ -50,30 +53,12 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
         }
 
         lifecycleScope.launch {
-            /*viewModel.getPopularMovies().collect {
-                when (it) {
-                    is NetworkState.Loading -> {
-                        progressBarHandler.show()
-                    }
-                    is NetworkState.Data -> {
-                        progressBarHandler.hide()
-                        initRecycler(it.data.results)
+            viewModel.localImageConfig.collectLatest {
+                movieListAdapter.imagesConfig = it
 
-                    }
-                    is NetworkState.Error -> {
-                        progressBarHandler.hide()
-
-                        if (it.unauthorized) {
-                            // todo: handle unauthorized action
-                            forceLogout()
-                        }
-
-                        requireContext().showToast(it.exception.message)
-                    }
+                viewModel.getPopularMoviesList.collectLatest { pagingData ->
+                    movieListAdapter.submitData(pagingData)
                 }
-            }*/
-            viewModel.getPopularMoviesList.collectLatest {
-                movieListAdapter.submitData(it)
             }
         }
 

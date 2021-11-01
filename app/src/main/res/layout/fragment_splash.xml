@@ -35,7 +35,9 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth="wrap_content" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:progressBarStyleHorizontal"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:indeterminate="true"

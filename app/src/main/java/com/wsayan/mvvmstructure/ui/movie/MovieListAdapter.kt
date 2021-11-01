@@ -7,11 +7,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.wsayan.mvvmstructure.databinding.ItemMovieBinding
+import com.wsayan.mvvmstructure.db.entity.ImagesConfig
 import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.ui.common.IAdapterListener
+import com.wsayan.mvvmstructure.util.loadNetworkImage
 
 class MovieListAdapter(val onItemClick: (data: ResultsItem?, position: Int, view: View) -> Unit) :
     PagingDataAdapter<ResultsItem, MovieListAdapter.ViewHolder>(DataDifferentiator) {
+    var imagesConfig: ImagesConfig? = null
 
     inner class ViewHolder(val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ResultsItem, position: Int) {
@@ -22,6 +25,10 @@ class MovieListAdapter(val onItemClick: (data: ResultsItem?, position: Int, view
             binding.itemLayout.setOnClickListener {
                 onItemClick(item, position, binding.itemLayout)
             }
+            binding.iconIV.loadNetworkImage(
+                binding.root.context,
+                "${imagesConfig?.base_url}w92${item.backdropPath}"
+            )
         }
     }
 
