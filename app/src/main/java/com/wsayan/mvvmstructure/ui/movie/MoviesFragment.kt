@@ -1,10 +1,9 @@
 package com.wsayan.mvvmstructure.ui.movie
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.wsayan.mvvmstructure.R
 import com.wsayan.mvvmstructure.databinding.FragmentMoviesBinding
 import com.wsayan.mvvmstructure.databinding.ItemMovieBinding
-import com.wsayan.mvvmstructure.network.NetworkState
 import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
 import com.wsayan.mvvmstructure.ui.base.BaseRecyclerAdapter
@@ -22,10 +20,8 @@ import com.wsayan.mvvmstructure.ui.common.IAdapterListener
 import com.wsayan.mvvmstructure.ui.common.PagerLoadStateAdapter
 import com.wsayan.mvvmstructure.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.util.*
 
 @AndroidEntryPoint
 class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
@@ -39,7 +35,9 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
         movieListAdapter = MovieListAdapter(onItemClick = { data, position, view ->
             when (view.id) {
                 R.id.itemLayout -> {
-                    findNavController().navigate(R.id.action_movies_to_details)
+                    findNavController().navigate(R.id.action_movies_to_details, bundleOf(
+                        getString(R.string.movie_bundle_key) to data
+                    ))
                 }
             }
         })
@@ -74,7 +72,7 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                     }
                 }
             }*/
-            viewModel.listData.collectLatest {
+            viewModel.getPopularMoviesList.collectLatest {
                 movieListAdapter.submitData(it)
             }
         }

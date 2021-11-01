@@ -1,7 +1,10 @@
 package com.wsayan.mvvmstructure.network.data
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class MovieListResponse(
 
     @field:SerializedName("page")
@@ -15,4 +18,4 @@ data class MovieListResponse(
 
     @field:SerializedName("total_results")
     val totalResults: Int? = null
-) : BaseResponse()
+) : BaseResponse(), Parcelable

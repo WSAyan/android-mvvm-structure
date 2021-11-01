@@ -30,7 +30,17 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    val listData = Pager(PagingConfig(pageSize = 6)) {
+    fun getMovieDetails(id: Int) = flow {
+        emit(NetworkState.Loading)
+
+        try {
+            emit(NetworkState.Data(moviesRepo.fetchMovieDetails(id)))
+        } catch (e: Exception) {
+            emit(e.resolveError())
+        }
+    }
+
+    val getPopularMoviesList = Pager(PagingConfig(pageSize = 6)) {
         PostDataSource(moviesRepo)
     }.flow.cachedIn(viewModelScope)
 
