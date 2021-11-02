@@ -15,4 +15,6 @@ interface IMoviesRepository {
     suspend fun insertImageConfig(images: Images)
     fun selectImageConfig(): Flow<ImagesConfig>
     fun isEmptyImageConfig(): Flow<Boolean>
+    fun cacheImageBaseUrl(url: String)
+    val imageBaseUrl: String
 }

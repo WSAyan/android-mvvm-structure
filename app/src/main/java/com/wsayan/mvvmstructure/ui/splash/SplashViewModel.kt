@@ -7,7 +7,6 @@ import com.wsayan.mvvmstructure.network.resolveError
 import com.wsayan.mvvmstructure.repo.MoviesRepository
 import com.wsayan.mvvmstructure.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.cache
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -32,6 +31,8 @@ class SplashViewModel @Inject constructor(
             moviesRepo.insertImageConfig(images)
         }
     }
+
+    fun saveImageBaseUrl(url: String) = moviesRepo.cacheImageBaseUrl(url)
 
     val isLocalConfigExists = moviesRepo.isEmptyImageConfig()
 }

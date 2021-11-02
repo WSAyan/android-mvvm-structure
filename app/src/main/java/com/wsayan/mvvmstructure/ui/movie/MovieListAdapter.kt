@@ -14,7 +14,7 @@ import com.wsayan.mvvmstructure.util.loadNetworkImage
 
 class MovieListAdapter(val onItemClick: (data: ResultsItem?, position: Int, view: View) -> Unit) :
     PagingDataAdapter<ResultsItem, MovieListAdapter.ViewHolder>(DataDifferentiator) {
-    var imagesConfig: ImagesConfig? = null
+    var imageBaseUrl: String? = null
 
     inner class ViewHolder(val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: ResultsItem, position: Int) {
@@ -27,7 +27,7 @@ class MovieListAdapter(val onItemClick: (data: ResultsItem?, position: Int, view
             }
             binding.iconIV.loadNetworkImage(
                 binding.root.context,
-                "${imagesConfig?.base_url}w92${item.backdropPath}"
+                "${imageBaseUrl}w92${item.backdropPath}"
             )
         }
     }

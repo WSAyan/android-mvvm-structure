@@ -85,4 +85,9 @@ class MoviesRepository @Inject constructor(
             .imageConfigDao()
             .isEmptyConfig()
 
+    override fun cacheImageBaseUrl(url: String) =
+        dataManager.preferencesHelper.put("image_base", url)
+
+    override val imageBaseUrl = dataManager.preferencesHelper["image_base", ""]
+
 }

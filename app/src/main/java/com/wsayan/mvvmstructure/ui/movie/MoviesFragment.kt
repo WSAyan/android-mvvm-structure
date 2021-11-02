@@ -27,12 +27,22 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
     private val viewModel: MovieViewModel by viewModels()
-    lateinit var movieListAdapter: MovieListAdapter
+    private lateinit var movieListAdapter: MovieListAdapter
 
     override fun viewRelatedTask() {
         binding.toolbar.backIV.visibility = View.GONE
         binding.toolbar.titleTV.text = getString(R.string.movies)
 
+        handleMovieRecycler()
+
+        lifecycleScope.launch {
+            viewModel.getPopularMoviesList.collectLatest { pagingData ->
+                movieListAdapter.submitData(pagingData)
+            }
+        }
+    }
+
+    private fun handleMovieRecycler() {
         movieListAdapter = MovieListAdapter(onItemClick = { data, position, view ->
             when (view.id) {
                 R.id.itemLayout -> {
@@ -44,6 +54,9 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                 }
             }
         })
+
+        movieListAdapter.imageBaseUrl = viewModel.imageBaseUrl
+
         binding.movieList.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
@@ -51,17 +64,6 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
                 footer = PagerLoadStateAdapter { movieListAdapter.retry() }
             )
         }
-
-        lifecycleScope.launch {
-            viewModel.localImageConfig.collectLatest {
-                movieListAdapter.imagesConfig = it
-
-                viewModel.getPopularMoviesList.collectLatest { pagingData ->
-                    movieListAdapter.submitData(pagingData)
-                }
-            }
-        }
-
 
         movieListAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.Loading) {

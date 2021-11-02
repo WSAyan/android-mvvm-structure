@@ -44,6 +44,6 @@ class MovieViewModel @Inject constructor(
         PostDataSource(moviesRepo)
     }.flow.cachedIn(viewModelScope)
 
-    val localImageConfig = moviesRepo.selectImageConfig()
+    val imageBaseUrl = moviesRepo.imageBaseUrl
 
 }

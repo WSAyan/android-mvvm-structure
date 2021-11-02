@@ -8,7 +8,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.wsayan.mvvmstructure.R
 import com.wsayan.mvvmstructure.databinding.FragmentSplashBinding
+import com.wsayan.mvvmstructure.db.entity.ImagesConfig
 import com.wsayan.mvvmstructure.network.NetworkState
+import com.wsayan.mvvmstructure.network.data.Images
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
 import com.wsayan.mvvmstructure.ui.movie.MovieViewModel
 import com.wsayan.mvvmstructure.util.showToast
@@ -29,31 +31,45 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
             viewModel.isLocalConfigExists.collectLatest { isExists ->
                 if (!isExists) {
-                    viewModel.getConfigurations().collectLatest {
-                        when (it) {
-                            is NetworkState.Loading -> {
-                                binding.progressBar.visibility = View.VISIBLE
-                            }
-                            is NetworkState.Data -> {
-                                binding.progressBar.visibility = View.GONE
-
-                                it.data.images?.let { it1 -> viewModel.saveConfigurations(it1) }
-
-                                findNavController().navigate(R.id.moviesFragment)
-                            }
-                            is NetworkState.Error -> {
-                                binding.progressBar.visibility = View.GONE
-
-                                requireContext().showToast(it.exception.message)
-                            }
-                        }
-                    }
+                    downLoadData()
                 } else {
-                    findNavController().navigate(R.id.moviesFragment)
+                    gotoMovies()
                 }
             }
         }
     }
+
+    private suspend fun downLoadData() {
+        viewModel.getConfigurations().collectLatest {
+            when (it) {
+                is NetworkState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is NetworkState.Data -> {
+                    binding.progressBar.visibility = View.GONE
+
+                    cacheConfigData(it.data.images)
+
+                    gotoMovies()
+                }
+                is NetworkState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+
+                    requireContext().showToast(it.exception.message)
+                }
+            }
+        }
+    }
+
+    private fun cacheConfigData(images: Images?) {
+        if (images != null) {
+            viewModel.saveConfigurations(images)
+
+            images.base_url?.let { viewModel.saveImageBaseUrl(it) }
+        }
+    }
+
+    private fun gotoMovies() = findNavController().navigate(R.id.moviesFragment)
 
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentSplashBinding
         get() = FragmentSplashBinding::inflate
