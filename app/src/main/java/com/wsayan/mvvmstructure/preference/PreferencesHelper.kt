@@ -6,11 +6,10 @@ import com.google.gson.Gson
 
 class PreferencesHelper(context: Context) {
     private val preferencesHelper: SharedPreferences
-    private val sslPref = "local-cache"
-
+    private val prefName = "local-cache"
 
     init {
-        preferencesHelper = context.getSharedPreferences(sslPref, Context.MODE_PRIVATE)
+        preferencesHelper = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
     }
 
     fun put(key: String, value: String?) {
@@ -53,18 +52,8 @@ class PreferencesHelper(context: Context) {
         return preferencesHelper.getLong(key, defaultValue)
     }
 
-    fun <T> getResponse(key: String, clazz: Class<T>): T? {
-        return try {
-            val response = preferencesHelper.getString(key, "") ?: ""
-            Gson().fromJson(response, clazz)
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    fun deleteSavedData(key: String) {
+    fun remove(key: String) {
         preferencesHelper.edit().remove(key).apply()
     }
-
 
 }

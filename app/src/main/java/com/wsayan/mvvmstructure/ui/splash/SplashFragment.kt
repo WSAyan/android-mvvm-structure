@@ -1,22 +1,18 @@
 package com.wsayan.mvvmstructure.ui.splash
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.wsayan.mvvmstructure.R
 import com.wsayan.mvvmstructure.databinding.FragmentSplashBinding
-import com.wsayan.mvvmstructure.db.entity.ImagesConfig
-import com.wsayan.mvvmstructure.network.NetworkState
+import com.wsayan.mvvmstructure.network.data.ConfigurationResponse
 import com.wsayan.mvvmstructure.network.data.Images
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
-import com.wsayan.mvvmstructure.ui.movie.MovieViewModel
-import com.wsayan.mvvmstructure.util.showToast
+import com.wsayan.mvvmstructure.ui.base.UIState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -31,35 +27,47 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>() {
 
             viewModel.isLocalConfigExists.collectLatest { isExists ->
                 if (!isExists) {
-                    downLoadData()
+                    viewModel.getConfigurations(R.id.config_state)
                 } else {
                     gotoMovies()
                 }
             }
         }
-    }
 
-    private suspend fun downLoadData() {
-        viewModel.getConfigurations().collectLatest {
-            when (it) {
-                is NetworkState.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                is NetworkState.Data -> {
-                    binding.progressBar.visibility = View.GONE
+        lifecycleScope.launch {
+            viewModel.showProgressBar.collect {
+                if (it) progressBarHandler.show() else progressBarHandler.hide()
+            }
+        }
 
-                    cacheConfigData(it.data.images)
+        lifecycleScope.launch {
+            viewModel.unauthorized.collect {
+                if (it) forceLogout()
+            }
+        }
 
-                    gotoMovies()
-                }
-                is NetworkState.Error -> {
-                    binding.progressBar.visibility = View.GONE
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                when (it) {
+                    is UIState.Loading -> {
 
-                    requireContext().showToast(it.exception.message)
+                    }
+                    is UIState.DataLoaded -> {
+                        cacheConfigData((it.data as ConfigurationResponse).images)
+
+                        gotoMovies()
+                    }
+                    is UIState.Error -> {
+
+                    }
+                    else -> {
+
+                    }
                 }
             }
         }
     }
+
 
     private fun cacheConfigData(images: Images?) {
         if (images != null) {

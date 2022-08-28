@@ -3,20 +3,16 @@ package com.wsayan.mvvmstructure.di
 import android.content.Context
 import com.wsayan.mvvmstructure.BuildConfig
 import com.wsayan.mvvmstructure.db.RoomHelper
-import com.wsayan.mvvmstructure.preference.PreferencesHelper
 import com.wsayan.mvvmstructure.network.IApiService
-import com.wsayan.mvvmstructure.repo.IMoviesRepository
-import com.wsayan.mvvmstructure.repo.MoviesRepository
+import com.wsayan.mvvmstructure.preference.PreferencesHelper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -24,7 +20,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     @Provides
     @Singleton
     fun provideOkHttpClient(
@@ -41,7 +36,7 @@ object AppModule {
             .addInterceptor { chain ->
                 val request = chain.request().newBuilder()
                     .addHeader("Content-Type", "application/json")
-                    .addHeader("Authorization", "")
+                    .addHeader("Authorization", "Bearer ${BuildConfig.API_KEY}")
 
                 chain.proceed(request.build())
             }.addInterceptor(httpLoggingInterceptor).build()
@@ -64,7 +59,6 @@ object AppModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .client(okHttpClient)
             .build()
     }
@@ -85,12 +79,5 @@ object AppModule {
     @Singleton
     fun provideRoomHelper(@ApplicationContext context: Context): RoomHelper {
         return RoomHelper(context)
-    }
-
-
-    @Provides
-    @Singleton
-    fun provideMoviesRepo(dataManager: DataManager): IMoviesRepository {
-        return MoviesRepository(dataManager)
     }
 }

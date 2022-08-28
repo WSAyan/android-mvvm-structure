@@ -88,35 +88,6 @@ class MoviesFragment : BaseFragment<FragmentMoviesBinding>() {
         }
     }
 
-    private fun initRecycler(results: List<ResultsItem?>?) {
-        binding.movieList.layoutManager =
-            LinearLayoutManager(
-                requireContext()
-            )
-
-        binding.movieList.adapter =
-            BaseRecyclerAdapter(requireContext(), object : IAdapterListener {
-
-                override fun <T> clickListener(position: Int, model: T, view: View) {
-                    when (view.id) {
-                        R.id.itemLayout -> {
-                            findNavController().navigate(R.id.action_movies_to_details)
-                        }
-                    }
-                }
-
-                override fun getViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder {
-                    return MovieListViewHolder(
-                        ItemMovieBinding.inflate(
-                            LayoutInflater.from(parent.context),
-                            parent,
-                            false
-                        ), requireContext()
-                    )
-                }
-            }, results as MutableList<ResultsItem?>)
-    }
-
     override val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> FragmentMoviesBinding
         get() = FragmentMoviesBinding::inflate
 }

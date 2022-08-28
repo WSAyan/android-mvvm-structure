@@ -1,61 +1,67 @@
 package com.wsayan.mvvmstructure.repo
 
 import com.wsayan.mvvmstructure.BuildConfig
+import com.wsayan.mvvmstructure.db.RoomHelper
 import com.wsayan.mvvmstructure.db.entity.ImagesConfig
-import com.wsayan.mvvmstructure.di.DataManager
+import com.wsayan.mvvmstructure.network.AppNetworkState
+import com.wsayan.mvvmstructure.network.IApiService
 import com.wsayan.mvvmstructure.network.convertData
 import com.wsayan.mvvmstructure.network.data.ConfigurationResponse
 import com.wsayan.mvvmstructure.network.data.Images
 import com.wsayan.mvvmstructure.network.data.MovieDetailsResponse
 import com.wsayan.mvvmstructure.network.data.MovieListResponse
+import com.wsayan.mvvmstructure.preference.PreferencesHelper
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
 class MoviesRepository @Inject constructor(
-    val dataManager: DataManager
-) : IMoviesRepository {
+    override var apiService: IApiService,
+    override var preferencesHelper: PreferencesHelper,
+    override var roomHelper: RoomHelper
+) : IMoviesRepository, BaseRepository() {
 
-    override suspend fun fetchPopularMovies(): MovieListResponse {
+    override suspend fun fetchPopularMovies(): Flow<AppNetworkState<MovieListResponse>> {
         val hashMap = HashMap<String, String>()
         hashMap["api_key"] = BuildConfig.API_KEY
-        return dataManager
-            .apiService
-            .getRequest("3/movie/popular", hashMap)
-            .convertData(MovieListResponse::class) as MovieListResponse
+        return handleNetworkCall {
+            apiService
+                .getRequest("3/movie/popular", hashMap)
+                .convertData(MovieListResponse::class) as MovieListResponse
+        }
     }
 
     override suspend fun fetchPopularMovies(page: Int): MovieListResponse {
         val hashMap = HashMap<String, String>()
         hashMap["api_key"] = BuildConfig.API_KEY
         hashMap["page"] = page.toString()
-        return dataManager
-            .apiService
+        return apiService
             .getRequest("3/movie/popular", hashMap)
             .convertData(MovieListResponse::class) as MovieListResponse
     }
 
-    override suspend fun fetchMovieDetails(id: Int): MovieDetailsResponse {
+    override suspend fun fetchMovieDetails(id: Int): Flow<AppNetworkState<MovieDetailsResponse>> {
         val hashMap = HashMap<String, String>()
         hashMap["api_key"] = BuildConfig.API_KEY
-        return dataManager
-            .apiService
-            .getRequest("3/movie/$id", hashMap)
-            .convertData(MovieDetailsResponse::class) as MovieDetailsResponse
+        return handleNetworkCall {
+            apiService
+                .getRequest("3/movie/$id", hashMap)
+                .convertData(MovieDetailsResponse::class) as MovieDetailsResponse
+        }
     }
 
-    override suspend fun fetchConfigurations(): ConfigurationResponse {
+    override suspend fun fetchConfigurations(): Flow<AppNetworkState<ConfigurationResponse>> {
         val hashMap = HashMap<String, String>()
         hashMap["api_key"] = BuildConfig.API_KEY
-        return dataManager
-            .apiService
-            .getRequest("3/configuration", hashMap)
-            .convertData(ConfigurationResponse::class) as ConfigurationResponse
+        return handleNetworkCall {
+            apiService
+                .getRequest("3/configuration", hashMap)
+                .convertData(ConfigurationResponse::class) as ConfigurationResponse
+        }
     }
 
     override suspend fun insertImageConfig(images: Images) {
-        dataManager
-            .roomHelper
+        roomHelper
             .getDatabase()
             .imageConfigDao()
             .insert(
@@ -72,22 +78,15 @@ class MoviesRepository @Inject constructor(
     }
 
     override fun selectImageConfig(): Flow<ImagesConfig> =
-        dataManager
-            .roomHelper
+        roomHelper
             .getDatabase()
             .imageConfigDao()
             .getLatestConfig()
 
     override fun isEmptyImageConfig(): Flow<Boolean> =
-        dataManager
-            .roomHelper
+        roomHelper
             .getDatabase()
             .imageConfigDao()
             .isEmptyConfig()
-
-    override fun cacheImageBaseUrl(url: String) =
-        dataManager.preferencesHelper.put("image_base", url)
-
-    override val imageBaseUrl = dataManager.preferencesHelper["image_base", ""]
 
 }

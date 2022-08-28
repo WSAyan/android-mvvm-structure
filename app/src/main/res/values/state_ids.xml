@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="config_state" type="id" />\
+    <item name="movie_details_state_1" type="id" />
+</resources>

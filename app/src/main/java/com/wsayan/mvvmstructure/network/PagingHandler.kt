@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.wsayan.mvvmstructure.network.data.ResultsItem
+import com.wsayan.mvvmstructure.repo.IMoviesRepository
 import com.wsayan.mvvmstructure.repo.MoviesRepository
 
-class PostDataSource(private val moviesRepository: MoviesRepository) :
+class PostDataSource(private val moviesRepository: IMoviesRepository) :
     PagingSource<Int, ResultsItem>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ResultsItem> {

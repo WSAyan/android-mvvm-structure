@@ -9,15 +9,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.wsayan.mvvmstructure.R
 import com.wsayan.mvvmstructure.databinding.FragmentMovieDetailsBinding
-import com.wsayan.mvvmstructure.network.NetworkState
 import com.wsayan.mvvmstructure.network.data.MovieDetailsResponse
 import com.wsayan.mvvmstructure.network.data.ResultsItem
 import com.wsayan.mvvmstructure.ui.base.BaseFragment
-import com.wsayan.mvvmstructure.ui.common.PagerLoadStateAdapter
+import com.wsayan.mvvmstructure.ui.base.UIState
 import com.wsayan.mvvmstructure.util.loadNetworkImage
-import com.wsayan.mvvmstructure.util.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -38,28 +37,35 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             arguments?.getParcelable<ResultsItem>(getString(R.string.movie_bundle_key))?.id
                 ?: return
 
-
+        viewModel.getMovieDetails(R.id.movie_details_state_1, movieId)
 
         lifecycleScope.launch {
-            viewModel.getMovieDetails(movieId).collect {
+            viewModel.showProgressBar.collect {
+                if (it) progressBarHandler.show() else progressBarHandler.hide()
+            }
+        }
+
+        lifecycleScope.launch {
+            viewModel.unauthorized.collect {
+                if (it) forceLogout()
+            }
+
+        }
+
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
                 when (it) {
-                    is NetworkState.Loading -> {
-                        progressBarHandler.show()
-                    }
-                    is NetworkState.Data -> {
-                        progressBarHandler.hide()
+                    is UIState.Loading -> {
 
-                        showData(it.data)
                     }
-                    is NetworkState.Error -> {
-                        progressBarHandler.hide()
+                    is UIState.DataLoaded -> {
+                        showData(it.data as MovieDetailsResponse)
+                    }
+                    is UIState.Error -> {
 
-                        if (it.unauthorized) {
-                            // todo: handle unauthorized action
-                            forceLogout()
-                        }
-                        it.exception.printStackTrace()
-                        requireContext().showToast(it.exception.message)
+                    }
+                    else -> {
+
                     }
                 }
             }
@@ -71,11 +77,7 @@ class MovieDetailsFragment : BaseFragment<FragmentMovieDetailsBinding>() {
             onItemClick = { data, position, view ->
                 when (view.id) {
                     R.id.itemLayout -> {
-                        findNavController().navigate(
-                            R.id.action_movies_to_details, bundleOf(
-                                getString(R.string.movie_bundle_key) to data
-                            )
-                        )
+
                     }
                 }
             }

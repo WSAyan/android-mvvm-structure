@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.util.language.LocaleHelperActivityDelegateImpl
 import com.wsayan.mvvmstructure.util.ProgressBarHandler
 import com.wsayan.mvvmstructure.R
@@ -16,9 +15,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 abstract class BaseActivity : AppCompatActivity() {
-
-    @Inject
-    lateinit var dataManager: DataManager
     val localeDelegate = LocaleHelperActivityDelegateImpl()
 
     var progressBarHandler: ProgressBarHandler? = null

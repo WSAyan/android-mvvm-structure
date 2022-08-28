@@ -8,15 +8,10 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
-import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.R
 import javax.inject.Inject
 
 abstract class BaseDialogFragment : DialogFragment() {
-
-    @Inject
-    lateinit var dataManager: DataManager
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 

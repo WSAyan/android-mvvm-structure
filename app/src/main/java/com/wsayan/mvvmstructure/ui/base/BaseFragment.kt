@@ -5,18 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.wsayan.mvvmstructure.di.DataManager
 import com.wsayan.mvvmstructure.util.ProgressBarHandler
 import com.wsayan.mvvmstructure.util.ViewDialog
 import javax.inject.Inject
 
 
 abstract class BaseFragment<VB: ViewBinding> : Fragment() {
-    @Inject
-    lateinit var dataManager: DataManager
-
     private var _binding: ViewBinding? = null
     abstract val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
     val progressBarHandler: ProgressBarHandler by lazy {
